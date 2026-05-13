@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitVerse Academy — Belajar Git Jadi Lebih Mudah dan Seru</title>
+  <meta name="description" content="Platform pembelajaran interaktif tentang Git dan GitHub untuk pemula, pelajar, dan anak muda. Belajar Git jadi lebih mudah dan seru bersama GitVerse Academy.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Initializing GitVerse...</div>
+  </div>
+
+  <!-- Scroll Progress Bar -->
+  <div id="scroll-progress"></div>
+
+  <!-- Particle Canvas -->
+  <canvas id="particles"></canvas>
+  <div class="grid-bg"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <a href="#hero" class="nav-logo">
+      <div class="nav-logo-icon"><i class="fa-brands fa-git-alt"></i></div>
+      <span>Git<em>Verse</em> Academy</span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#about">Tentang Git</a></li>
+      <li><a href="#audio">Audio</a></li>
+      <li><a href="#video">Video</a></li>
+      <li><a href="#terminal">Terminal</a></li>
+      <li><a href="#quiz">Quiz</a></li>
+      <li><a href="#contact">Kontak</a></li>
+    </ul>
+    <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
+      <i class="fas fa-bars"></i>
+    </button>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fas fa-rocket"></i> Platform Belajar Git #1</div>
+      <h1>Belajar Git Jadi Lebih Mudah dan Seru</h1>
+      <div class="hero-typing" id="hero-typing"><span class="cursor"></span></div>
+      <p>Platform pembelajaran interaktif tentang Git &amp; GitHub. Dirancang untuk pemula, pelajar, dan anak muda yang ingin menguasai version control.</p>
+      <div class="hero-buttons">
+        <a href="#about" class="btn-primary"><i class="fas fa-play"></i> Mulai Belajar</a>
+        <a href="#terminal" class="btn-secondary"><i class="fas fa-terminal"></i> Coba Terminal</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Git Section -->
+  <section id="about">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <div class="section-badge"><i class="fas fa-code-branch"></i> Tentang Git</div>
+        <h2>Apa Itu <span class="gradient">Git & GitHub</span>?</h2>
+        <p>Kenali alat yang digunakan jutaan developer di seluruh dunia untuk mengelola kode secara efisien.</p>
+      </div>
+      <div class="about-grid">
+        <div class="card reveal">
+          <div class="card-icon cyan"><i class="fa-brands fa-git-alt"></i></div>
+          <h3>Apa Itu Git?</h3>
+          <p>Git adalah sistem version control terdistribusi yang memungkinkan developer melacak perubahan kode, berkolaborasi dalam tim, dan mengelola riwayat proyek secara efisien. Dibuat oleh Linus Torvalds pada tahun 2005.</p>
+        </div>
+        <div class="card reveal">
+          <div class="card-icon green"><i class="fa-brands fa-github"></i></div>
+          <h3>Fungsi GitHub</h3>
+          <p>GitHub adalah platform hosting berbasis cloud untuk repository Git. Dengan GitHub, kamu bisa menyimpan kode secara online, berkolaborasi dengan developer lain, melakukan code review, dan mengelola proyek open source.</p>
+        </div>
+        <div class="card reveal">
+          <div class="card-icon purple"><i class="fas fa-code-branch"></i></div>
+          <h3>Version Control</h3>
+          <p>Version control memungkinkan kamu menyimpan setiap versi kode, kembali ke versi sebelumnya jika ada kesalahan, dan bekerja di beberapa fitur secara paralel menggunakan branch tanpa konflik.</p>
+        </div>
+        <div class="card reveal">
+          <div class="card-icon amber"><i class="fas fa-users"></i></div>
+          <h3>Kolaborasi Tim</h3>
+          <p>Dengan Git, beberapa developer bisa bekerja pada proyek yang sama secara bersamaan. Fitur branching dan merging memudahkan integrasi kode dari berbagai kontributor tanpa mengganggu satu sama lain.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Audio Learning Section -->
+  <section id="audio" class="audio-section">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <div class="section-badge"><i class="fas fa-headphones"></i> Audio Learning</div>
+        <h2>Belajar Git Sambil <span class="gradient">Mendengarkan</span></h2>
+        <p>Materi audio tentang Git yang bisa kamu dengarkan kapan saja, seperti podcast mini.</p>
+      </div>
+      <div class="audio-player-container reveal">
+        <div class="audio-now-playing">
+          <div class="audio-art"><i class="fa-brands fa-git-alt"></i></div>
+          <div class="audio-info">
+            <h4 id="audio-title">Pengenalan Git & Version Control</h4>
+            <p id="audio-artist">GitVerse Academy • Episode 1</p>
+          </div>
+        </div>
+        <div class="audio-controls">
+          <button id="audio-prev" aria-label="Previous"><i class="fas fa-backward-step"></i></button>
+          <button class="audio-play-btn" id="audio-play" aria-label="Play"><i class="fas fa-play"></i></button>
+          <button id="audio-next" aria-label="Next"><i class="fas fa-forward-step"></i></button>
+          <div class="audio-progress-wrap">
+            <div class="audio-progress-bar" id="audio-progress-bar">
+              <div class="audio-progress-fill" id="audio-progress-fill"></div>
+            </div>
+            <div class="audio-time">
+              <span id="audio-current-time">0:00</span>
+              <span id="audio-duration">3:45</span>
+            </div>
+          </div>
+        </div>
+        <div class="audio-track-list">
+          <h5>Daftar Episode</h5>
+          <div class="track-item active" data-track="0">
+            <span class="track-num">01</span>
+            <span class="track-title">Pengenalan Git & Version Control</span>
+            <span class="track-dur">3:45</span>
+          </div>
+          <div class="track-item" data-track="1">
+            <span class="track-num">02</span>
+            <span class="track-title">Git Init, Add, dan Commit</span>
+            <span class="track-dur">4:20</span>
+          </div>
+          <div class="track-item" data-track="2">
+            <span class="track-num">03</span>
+            <span class="track-title">Branching dan Merging</span>
+            <span class="track-dur">5:10</span>
+          </div>
+          <div class="track-item" data-track="3">
+            <span class="track-num">04</span>
+            <span class="track-title">Git Push, Pull, dan Clone</span>
+            <span class="track-dur">4:00</span>
+          </div>
+          <div class="track-item" data-track="4">
+            <span class="track-num">05</span>
+            <span class="track-title">GitHub untuk Kolaborasi</span>
+            <span class="track-dur">5:30</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Tutorial Section -->
+  <section id="video">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <div class="section-badge"><i class="fas fa-video"></i> Video Tutorial</div>
+        <h2>Tutorial <span class="gradient">Video Interaktif</span></h2>
+        <p>Pelajari Git dan GitHub melalui video tutorial berkualitas tinggi dari mentor terpilih.</p>
+      </div>
+      <div class="video-grid">
+        <div class="video-card reveal">
+          <iframe src="https://www.youtube.com/embed/RGOj5yH7evk" title="Git & GitHub Full Course" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope" allowfullscreen loading="lazy"></iframe>
+          <div class="video-card-body">
+            <h4><i class="fas fa-play-circle" style="color:var(--cyan)"></i> Git & GitHub untuk Pemula</h4>
+            <p>Panduan lengkap Git dan GitHub dari nol hingga mahir. Cocok untuk pemula yang baru mulai belajar coding.</p>
+          </div>
+        </div>
+        <div class="video-card reveal">
+          <iframe src="https://www.youtube.com/embed/SWYqp7iY_Tc" title="Git Crash Course" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope" allowfullscreen loading="lazy"></iframe>
+          <div class="video-card-body">
+            <h4><i class="fas fa-play-circle" style="color:var(--green)"></i> Git Crash Course</h4>
+            <p>Pelajari perintah-perintah dasar Git dalam waktu singkat. Tutorial cepat untuk memahami workflow Git.</p>
+          </div>
+        </div>
+        <div class="video-card reveal">
+          <iframe src="https://www.youtube.com/embed/USjZcfj8yxE" title="Git in 15 Minutes" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope" allowfullscreen loading="lazy"></iframe>
+          <div class="video-card-body">
+            <h4><i class="fas fa-play-circle" style="color:var(--purple)"></i> Belajar Git dalam 15 Menit</h4>
+            <p>Rangkuman singkat dan padat tentang perintah Git yang paling sering digunakan sehari-hari oleh developer.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Terminal Simulator Section -->
+  <section id="terminal">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <div class="section-badge"><i class="fas fa-terminal"></i> Simulasi Terminal</div>
+        <h2>Praktek Langsung di <span class="gradient">Terminal Git</span></h2>
+        <p>Coba ketik perintah Git secara langsung dan lihat hasilnya seperti terminal asli.</p>
+      </div>
+      <div class="terminal-wrapper reveal">
+        <div class="terminal-header">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <span class="terminal-title">gitverse@academy: ~/project</span>
+        </div>
+        <div class="terminal-body" id="terminal-body">
+          <div class="terminal-line">
+            <span class="output">Selamat datang di GitVerse Terminal Simulator! 🚀</span>
+          </div>
+          <div class="terminal-line">
+            <span class="output">Ketik <span class="success">'help'</span> untuk melihat daftar command yang tersedia.</span>
+          </div>
+          <div class="terminal-line">
+            <span class="output">──────────────────────────────────────────</span>
+          </div>
+          <div class="terminal-input-line">
+            <span class="prompt">gitverse</span><span class="path">@academy</span><span class="prompt">:~/project$ </span>
+            <input type="text" id="terminal-input" autocomplete="off" autofocus spellcheck="false">
+          </div>
+        </div>
+      </div>
+      <div class="terminal-hint reveal">
+        <p>💡 Coba ketik: <code>git init</code>, <code>git add .</code>, <code>git commit -m "first commit"</code>, <code>git push</code>, atau <code>help</code></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quiz Section -->
+  <section id="quiz">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <div class="section-badge"><i class="fas fa-trophy"></i> Quiz & Challenge</div>
+        <h2>Uji Pengetahuan <span class="gradient">Git Kamu</span></h2>
+        <p>Jawab pertanyaan seputar Git dan raih badge achievement sebagai bukti kemampuanmu!</p>
+      </div>
+      <div class="quiz-container reveal">
+        <div class="quiz-progress">
+          <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-progress-fill"></div></div>
+          <span class="quiz-progress-text" id="quiz-progress-text">0 / 10</span>
+        </div>
+        <div id="quiz-area">
+          <!-- Quiz questions rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <div class="section-badge"><i class="fas fa-envelope"></i> Kontak</div>
+        <h2>Hubungi <span class="gradient">Admin & Mentor</span></h2>
+        <p>Butuh bantuan atau ingin bergabung dengan komunitas? Hubungi kami melalui channel berikut.</p>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-card reveal">
+          <div class="contact-card-icon wa"><i class="fa-brands fa-whatsapp"></i></div>
+          <h4>WhatsApp Admin</h4>
+          <p>Chat langsung dengan admin GitVerse untuk bantuan cepat.</p>
+          <a href="https://wa.me/6285647971700" target="_blank"><i class="fa-brands fa-whatsapp"></i> Chat Sekarang</a>
+        </div>
+        <div class="contact-card reveal">
+          <div class="contact-card-icon email"><i class="fas fa-envelope"></i></div>
+          <h4>Email Mentor</h4>
+          <p>Kirim pertanyaan detail ke mentor untuk jawaban mendalam.</p>
+          <a href="mailto:GitVerse@Academy"><i class="fas fa-envelope"></i> Kirim Email</a>
+        </div>
+        <div class="contact-card reveal">
+          <div class="contact-card-icon discord"><i class="fa-brands fa-discord"></i></div>
+          <h4>Discord Komunitas</h4>
+          <p>Gabung server Discord dan belajar bareng komunitas.</p>
+          <a href="https://discord.gg/gitverse" target="_blank"><i class="fa-brands fa-discord"></i> Join Server</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Media Section -->
+  <section class="social-section">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <div class="section-badge"><i class="fas fa-share-nodes"></i> Sosial Media</div>
+        <h2>Ikuti Kami di <span class="gradient">Sosial Media</span></h2>
+        <p>Dapatkan tips, tutorial, dan update terbaru seputar Git & programming.</p>
+      </div>
+      <div class="social-links reveal">
+        <a href="https://instagram.com/gitverse.academy" target="_blank" class="social-link ig" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://tiktok.com/@gitverse.academy" target="_blank" class="social-link tt" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+        <a href="https://youtube.com/@gitverse" target="_blank" class="social-link yt" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+        <a href="https://github.com/gitverse-academy" target="_blank" class="social-link gh" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <a href="#hero" class="nav-logo">
+          <div class="nav-logo-icon"><i class="fa-brands fa-git-alt"></i></div>
+          <span>Git<em>Verse</em> Academy</span>
+        </a>
+        <p>Platform pembelajaran interaktif tentang Git &amp; GitHub untuk pemula, pelajar, dan anak muda Indonesia.</p>
+      </div>
+      <div class="footer-links">
+        <h5>Navigasi</h5>
+        <ul>
+          <li><a href="#about">Tentang Git</a></li>
+          <li><a href="#audio">Audio Learning</a></li>
+          <li><a href="#video">Video Tutorial</a></li>
+          <li><a href="#terminal">Simulasi Terminal</a></li>
+          <li><a href="#quiz">Quiz & Challenge</a></li>
+          <li><a href="#contact">Kontak</a></li>
+        </ul>
+      </div>
+      <div class="footer-info">
+        <h5>Informasi</h5>
+        <p><i class="fas fa-school"></i> GitVerse Academy</p>
+        <p><i class="fas fa-map-marker-alt"></i> Indonesia</p>
+        <p><i class="fas fa-envelope"></i> info@gitverse.academy</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 GitVerse Academy. All rights reserved. Built with <i class="fas fa-heart" style="color:var(--red)"></i> for the coding community.</p>
+    </div>
+  </footer>
+
+  <!-- Back to Top -->
+  <button id="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+  <script src="script.js"></script>
+</body>
+</html>
