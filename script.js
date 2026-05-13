@@ -107,48 +107,75 @@ function typeWriter() {
 }
 setTimeout(typeWriter, 1500);
 
-// ===== AUDIO PLAYER (SpeechSynthesis) =====
+// ===== AUDIO PLAYER (SpeechSynthesis with Chunking) =====
 const tracks = [
   {
     title: 'Pengenalan Git & Version Control',
-    ep: 'Episode 1', dur: '~2 min',
+    ep: 'Episode 1',
     text: 'Selamat datang di GitVerse Academy. Di episode pertama ini, kita akan membahas apa itu Git dan Version Control. Git adalah sistem version control terdistribusi yang diciptakan oleh Linus Torvalds pada tahun 2005. Version control adalah sistem yang mencatat setiap perubahan pada file dari waktu ke waktu, sehingga kamu bisa kembali ke versi sebelumnya kapan saja. Bayangkan kamu sedang menulis dokumen, dan kamu bisa menyimpan setiap versi perubahannya. Itulah konsep dasar version control. Dengan Git, setiap developer memiliki salinan lengkap dari seluruh riwayat proyek di komputer masing-masing. Ini membuat Git sangat cepat dan bisa digunakan bahkan tanpa koneksi internet. Git sangat penting dalam dunia pemrograman modern karena memungkinkan tim developer bekerja bersama tanpa saling mengganggu.'
   },
   {
     title: 'Git Init, Add, dan Commit',
-    ep: 'Episode 2', dur: '~2 min',
+    ep: 'Episode 2',
     text: 'Di episode kedua ini, kita akan belajar tiga perintah dasar Git yang paling penting. Pertama, git init. Perintah ini digunakan untuk membuat repository Git baru di folder proyek kamu. Cukup buka terminal, masuk ke folder proyek, dan ketik git init. Maka Git akan mulai melacak perubahan di folder tersebut. Kedua, git add. Setelah kamu mengubah atau membuat file baru, gunakan git add untuk menambahkan file ke staging area. Staging area adalah tempat persiapan sebelum perubahan disimpan. Kamu bisa menggunakan git add titik untuk menambahkan semua file sekaligus. Ketiga, git commit. Perintah ini menyimpan snapshot dari semua perubahan yang ada di staging area. Selalu tambahkan pesan deskriptif dengan flag minus m, contohnya: git commit minus m first commit. Ketiga perintah ini adalah fondasi dari workflow Git yang harus kamu kuasai.'
   },
   {
     title: 'Branching dan Merging',
-    ep: 'Episode 3', dur: '~2 min',
+    ep: 'Episode 3',
     text: 'Episode ketiga membahas konsep branching dan merging di Git. Branch atau cabang memungkinkan kamu mengembangkan fitur baru secara terpisah dari kode utama. Branch utama biasanya bernama main atau master. Untuk membuat branch baru, gunakan perintah git branch nama-branch. Untuk pindah ke branch tersebut, gunakan git checkout nama-branch. Saat kamu bekerja di branch terpisah, perubahan yang kamu buat tidak akan mempengaruhi branch utama. Setelah fitur selesai dan sudah diuji, kamu bisa menggabungkan branch fitur ke branch utama menggunakan perintah git merge. Terkadang, saat menggabungkan branch, terjadi konflik karena perubahan yang bertentangan. Ini disebut merge conflict. Kamu harus menyelesaikan konflik tersebut secara manual sebelum merge bisa diselesaikan. Branching adalah salah satu fitur paling powerful di Git.'
   },
   {
     title: 'Git Push, Pull, dan Clone',
-    ep: 'Episode 4', dur: '~2 min',
+    ep: 'Episode 4',
     text: 'Di episode keempat, kita membahas cara berinteraksi dengan remote repository. Git push digunakan untuk mengupload commit dari repository lokal ke remote repository seperti GitHub. Contohnya: git push origin main. Git pull digunakan untuk mengambil dan menggabungkan perubahan terbaru dari remote repository ke repository lokal kamu. Ini penting saat bekerja dalam tim agar kode kamu selalu up to date. Git clone digunakan untuk menyalin seluruh repository dari remote ke komputer kamu. Contohnya: git clone diikuti URL repository. Perintah ini sangat berguna saat kamu ingin berkontribusi ke proyek open source atau memulai proyek dari template yang sudah ada. Ketiga perintah ini adalah jembatan antara komputer lokal kamu dan server remote seperti GitHub.'
   },
   {
     title: 'GitHub untuk Kolaborasi',
-    ep: 'Episode 5', dur: '~2 min',
+    ep: 'Episode 5',
     text: 'Episode terakhir membahas GitHub sebagai platform kolaborasi. GitHub adalah layanan hosting berbasis cloud untuk repository Git. Dengan GitHub, kamu bisa menyimpan kode secara online, berkolaborasi dengan developer lain, dan berkontribusi ke proyek open source. Fitur penting GitHub antara lain: Pull Request, yaitu cara mengusulkan perubahan kode ke repository orang lain. Issues, untuk melaporkan bug atau meminta fitur baru. GitHub Actions, untuk otomatisasi seperti testing dan deployment. Dan GitHub Pages, untuk hosting website statis secara gratis. Untuk memulai, buat akun di github dot com, lalu buat repository baru. Hubungkan repository lokal kamu dengan perintah git remote add origin diikuti URL repository. Setelah itu, kamu bisa mulai push kode ke GitHub. Terima kasih sudah mendengarkan seluruh episode GitVerse Academy. Selamat belajar dan terus berlatih!'
   }
 ];
 
 let currentTrack = 0, isPlaying = false, audioProgress = 0, audioInterval = null;
-let speechUtterance = null;
+let speechChunks = [], currentChunkIdx = 0, chromeKeepAlive = null;
 const synth = window.speechSynthesis;
+let voicesLoaded = false;
 
-function getEstimatedDuration(text) {
-  // Roughly 2.5 words per second for Indonesian speech
-  const words = text.split(/\s+/).length;
-  return Math.ceil(words / 2.5);
+// Pre-load voices
+function loadVoices() {
+  const voices = synth.getVoices();
+  if (voices.length > 0) voicesLoaded = true;
+}
+loadVoices();
+if (synth.onvoiceschanged !== undefined) {
+  synth.onvoiceschanged = loadVoices;
+}
+
+// Split text into sentences for Chrome compatibility (Chrome cuts off after ~15s)
+function splitIntoChunks(text) {
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+  const chunks = [];
+  let current = '';
+  for (const sentence of sentences) {
+    if ((current + sentence).length > 200) {
+      if (current) chunks.push(current.trim());
+      current = sentence;
+    } else {
+      current += sentence;
+    }
+  }
+  if (current.trim()) chunks.push(current.trim());
+  return chunks;
 }
 
 function formatTime(secs) {
   const m = Math.floor(secs / 60), s = secs % 60;
   return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function getEstimatedDuration(text) {
+  const words = text.split(/\s+/).length;
+  return Math.ceil(words / 2.5);
 }
 
 function updateTrackUI() {
@@ -166,8 +193,62 @@ function updateTrackUI() {
 function stopSpeech() {
   synth.cancel();
   clearInterval(audioInterval);
+  clearInterval(chromeKeepAlive);
+  speechChunks = [];
+  currentChunkIdx = 0;
   isPlaying = false;
   document.getElementById('audio-play').innerHTML = '<i class="fas fa-play"></i>';
+}
+
+function getBestVoice() {
+  const voices = synth.getVoices();
+  // Priority: Indonesian > English (US) > any English > first available
+  return voices.find(v => v.lang === 'id-ID')
+      || voices.find(v => v.lang.startsWith('id'))
+      || voices.find(v => v.lang === 'en-US')
+      || voices.find(v => v.lang.startsWith('en'))
+      || voices[0] || null;
+}
+
+function speakChunk(idx) {
+  if (idx >= speechChunks.length || !isPlaying) {
+    // All chunks done
+    clearInterval(audioInterval);
+    clearInterval(chromeKeepAlive);
+    document.getElementById('audio-progress-fill').style.width = '100%';
+    document.getElementById('audio-current-time').textContent = formatTime(audioProgress);
+    isPlaying = false;
+    document.getElementById('audio-play').innerHTML = '<i class="fas fa-play"></i>';
+    // Auto-next after 2 seconds
+    setTimeout(() => {
+      if (!isPlaying) {
+        currentTrack = (currentTrack + 1) % tracks.length;
+        updateTrackUI();
+      }
+    }, 2000);
+    return;
+  }
+
+  const utt = new SpeechSynthesisUtterance(speechChunks[idx]);
+  utt.lang = 'id-ID';
+  utt.rate = 1;
+  utt.pitch = 1;
+  const voice = getBestVoice();
+  if (voice) utt.voice = voice;
+
+  utt.onend = () => {
+    currentChunkIdx++;
+    speakChunk(currentChunkIdx);
+  };
+
+  utt.onerror = (e) => {
+    if (e.error !== 'canceled') {
+      currentChunkIdx++;
+      speakChunk(currentChunkIdx);
+    }
+  };
+
+  synth.speak(utt);
 }
 
 function startSpeech() {
@@ -176,19 +257,12 @@ function startSpeech() {
   document.getElementById('audio-play').innerHTML = '<i class="fas fa-pause"></i>';
 
   const track = tracks[currentTrack];
-  speechUtterance = new SpeechSynthesisUtterance(track.text);
-  speechUtterance.lang = 'id-ID';
-  speechUtterance.rate = 1;
-  speechUtterance.pitch = 1;
-
-  // Try to find an Indonesian voice
-  const voices = synth.getVoices();
-  const idVoice = voices.find(v => v.lang.startsWith('id')) || voices.find(v => v.lang.startsWith('en'));
-  if (idVoice) speechUtterance.voice = idVoice;
+  speechChunks = splitIntoChunks(track.text);
+  currentChunkIdx = 0;
 
   const estDur = getEstimatedDuration(track.text);
-
   audioProgress = 0;
+
   audioInterval = setInterval(() => {
     if (!isPlaying) return;
     audioProgress++;
@@ -196,43 +270,22 @@ function startSpeech() {
     document.getElementById('audio-current-time').textContent = formatTime(audioProgress);
   }, 1000);
 
-  speechUtterance.onend = () => {
-    clearInterval(audioInterval);
-    document.getElementById('audio-progress-fill').style.width = '100%';
-    document.getElementById('audio-current-time').textContent = formatTime(audioProgress);
-    isPlaying = false;
-    document.getElementById('audio-play').innerHTML = '<i class="fas fa-play"></i>';
-    // Auto next after 2 seconds
-    setTimeout(() => {
-      if (!isPlaying) {
-        currentTrack = (currentTrack + 1) % tracks.length;
-        updateTrackUI();
-      }
-    }, 2000);
-  };
+  // Chrome workaround: keep synth alive by calling resume every 10s
+  chromeKeepAlive = setInterval(() => {
+    if (synth.speaking && !synth.paused) {
+      synth.pause();
+      synth.resume();
+    }
+  }, 10000);
 
-  synth.speak(speechUtterance);
+  speakChunk(0);
 }
 
 function togglePlay() {
   if (isPlaying) {
-    if (synth.paused) {
-      synth.resume();
-      isPlaying = true;
-      document.getElementById('audio-play').innerHTML = '<i class="fas fa-pause"></i>';
-    } else {
-      synth.pause();
-      isPlaying = false;
-      document.getElementById('audio-play').innerHTML = '<i class="fas fa-play"></i>';
-    }
+    stopSpeech();
   } else {
-    if (synth.paused) {
-      synth.resume();
-      isPlaying = true;
-      document.getElementById('audio-play').innerHTML = '<i class="fas fa-pause"></i>';
-    } else {
-      startSpeech();
-    }
+    startSpeech();
   }
 }
 
@@ -245,11 +298,6 @@ document.querySelectorAll('.track-item').forEach(t => t.addEventListener('click'
   updateTrackUI();
   startSpeech();
 }));
-
-// Load voices (some browsers load async)
-if (synth.onvoiceschanged !== undefined) {
-  synth.onvoiceschanged = () => {};
-}
 
 // ===== TERMINAL SIMULATOR =====
 const terminalBody = document.getElementById('terminal-body');
