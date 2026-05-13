@@ -1,5 +1,6 @@
 // ===== LOADER =====
 window.addEventListener('load', () => {
+  window.scrollTo(0, 0);
   setTimeout(() => document.getElementById('loader').classList.add('hidden'), 1200);
 });
 
